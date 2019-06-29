@@ -1,4 +1,4 @@
-export interface SpringConfigControllerProperties {
+export interface ISpringConfigControllerProperties {
     hostname: string,
     port: number,
     httpProtocol: "http" | "https",

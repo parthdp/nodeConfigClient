@@ -1,6 +1,6 @@
-import { IConfigStore } from "../config/configStore.interface";
+import { SpringConfigStore } from "../config/store/spring/springConfigStore";
 
 export interface IConfigController {
-    getConfigStore(): IConfigStore
+    getConfigStore(applicationName: string): SpringConfigStore
     refreshConfigStore(): void
 }
