@@ -1,5 +1,6 @@
 import { ILogger } from "./logger.interface";
 
+// tslint:disable:no-console
 export class SimpleLogger implements ILogger {
     public logInfo(message: string) {
        console.log(message);

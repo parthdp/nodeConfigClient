@@ -3,7 +3,7 @@ import { IConfigController } from "./config-controller.interface";
 import { ILogger } from "../common/logger/logger.interface";
 import { ISpringConfigControllerProperties } from "./spring-config-controller-properties.interface";
 import { ISpringConfigResponse } from "../config/store/spring/config-response.interface";
-import { SpringConfigStore, IProfileConfigStore } from "../config/store/spring/springConfigStore";
+import { IProfileConfigStore, SpringConfigStore } from "../config/store/spring/springConfigStore";
 import { URL } from 'url';
 
 export class SpringConfigController implements IConfigController {
@@ -26,7 +26,7 @@ export class SpringConfigController implements IConfigController {
             .then((response: string) => {
                 const configResponse: ISpringConfigResponse = JSON.parse(response);
                 if(configResponse.propertySources.length > 0) {
-                    // supports only one property source at this time
+                    // TODO: Support more than one property sources using priority
                     const source = configResponse.propertySources[0].source;
                     const profileConfigStore: IProfileConfigStore = {profileStore: {}};
                     Object.keys(source).forEach((key: string) => {

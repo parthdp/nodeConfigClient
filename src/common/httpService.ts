@@ -1,5 +1,5 @@
-const request = require('request').defaults({ rejectUnauthorized: false });
 import { Promise } from 'es6-promise';
+import request from 'request';
 import { URL } from 'url';
 
 export class HttpService {
