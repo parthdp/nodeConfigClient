@@ -15,48 +15,51 @@ export class SpringConfigController implements IConfigController {
         this.httpService = new HttpService();
     }
 
-    public getConfigStore(applicationName: string): Promise<SpringConfigStore> {
-
-        if (this.configStoreMap[applicationName]) {
-            return Promise.resolve(this.configStoreMap[applicationName]);
-        }
+    public async loadConfig(): Promise<void> {
+        this.logger.logInfo("[Started] Loading configs for application: [" + this.properties.applicationName + "]");
 
         const promises: any = []
-        return new Promise<SpringConfigStore>((resolve, reject) => {
-            this.properties.profiles.forEach(profile => {
-                promises.push(this.httpService.get(this.constructConfigUrl(applicationName, profile), {}));   
+        this.properties.profiles.forEach(profile => {
+            promises.push(this.httpService.get(this.constructConfigUrl(this.properties.applicationName, profile), {}));   
+        });
+
+        const profileConfigStore: IProfileConfigStore = {profileStore: {}};
+
+        try {
+            const responses: any = await Promise.all(promises);
+
+            let index = 0;
+            responses.forEach((response: string) => {
+                const profile: string = this.properties.profiles[index++];
+                const configResponse: ISpringConfigResponse = JSON.parse(response);
+                if(configResponse.propertySources.length > 0) {
+                    // TODO: Support more than one property sources using priority
+                    const source = configResponse.propertySources[0].source;
+
+                    Object.keys(source).forEach((key: string) => {
+                        this.logger.logInfo("Config for application: [" + this.properties.applicationName + "], profile: [" + profile + "], name: [" + key + "]");
+
+                        if (profileConfigStore.profileStore[profile]) {
+                            profileConfigStore.profileStore[profile][key] = { name: key, value: source[key]}
+                        } else {
+                            profileConfigStore.profileStore[profile] = {}
+                            profileConfigStore.profileStore[profile][key] = { name: key, value: source[key]}
+                        }
+                    });
+                }
             });
+        
+            this.configStoreMap[this.properties.applicationName] = new SpringConfigStore(profileConfigStore);
+        
+            this.logger.logInfo("[Completed] Loading configs for application: [" + this.properties.applicationName + "]");
+        } catch (error) {
+            this.logger.logError("Loading configs for application: [" + this.properties.applicationName + "] caused error:" + error);
+        }
+    }
 
-            const profileConfigStore: IProfileConfigStore = {profileStore: {}};
-            Promise.all(promises).then((responses: any) => {
-                let index = 0;
-                responses.forEach((response: string) => {
-                    const profile: string = this.properties.profiles[index++];
-                    const configResponse: ISpringConfigResponse = JSON.parse(response);
-                    if(configResponse.propertySources.length > 0) {
-                        // TODO: Support more than one property sources using priority
-                        const source = configResponse.propertySources[0].source;
-
-                        Object.keys(source).forEach((key: string) => {
-                            this.logger.logInfo("loading " + key + " ..");
-
-                            if (profileConfigStore.profileStore[profile]) {
-                                profileConfigStore.profileStore[profile][key] = { name: key, value: source[key]}
-                            } else {
-                                profileConfigStore.profileStore[profile] = {}
-                                profileConfigStore.profileStore[profile][key] = { name: key, value: source[key]}
-                            }
-                        });
-                    }
-                });
-            
-                this.configStoreMap[applicationName] = new SpringConfigStore(profileConfigStore);
-                resolve(this.configStoreMap[applicationName]);
-            }).catch((error: any) => {
-                this.logger.logError(error);
-                reject(error);
-            });
-        })
+    public getConfigStore(applicationName: string): SpringConfigStore {
+        this.logger.logInfo("Getting configs for application: [" + applicationName + "]");
+        return this.configStoreMap[applicationName];
     }
     
     public refreshConfigStore(): void {

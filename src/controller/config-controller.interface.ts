@@ -1,6 +1,7 @@
 import { SpringConfigStore } from "../config/store/spring/springConfigStore";
 
 export interface IConfigController {
-    getConfigStore(applicationName: string): Promise<SpringConfigStore>
+    loadConfig(): Promise<void>
+    getConfigStore(applicationName: string): SpringConfigStore
     refreshConfigStore(): void
 }

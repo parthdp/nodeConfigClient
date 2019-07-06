@@ -6,5 +6,6 @@ export interface ISpringConfigControllerProperties {
     username: string,
     password: string,
     profiles: string[],
-    label: string
+    label: string,
+    applicationName: string
 }

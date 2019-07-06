@@ -12,7 +12,6 @@
             "args" : [
                 "/Users/parthpatel/Desktop/projects/github/nodeConfigClient/properties/spring.properties.js"
             ],
-            "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"
             ]

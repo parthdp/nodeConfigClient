@@ -5,8 +5,9 @@ const properties = {
     authRequired: true,
     username: 'user',
     password: 'f09828e4-c73e-4bcc-a732-1cbd0305cc9a',
-    profiles: ['development'],
-    label: 'master'
+    profiles: ['development', 'staging'],
+    label: 'master',
+    applicationName: 'sampleClient'
 }
 
 module.exports = properties;
