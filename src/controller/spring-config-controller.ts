@@ -65,14 +65,18 @@ export class SpringConfigController implements IConfigController {
         return this.configStoreMap[applicationName];
     }
     
-    public refreshConfigStore(): void {
+    public refreshConfigStore(): Promise<void> {
         this.logger.logInfo("[Started] Refreshing the configstore ...");
-        this.loadConfig().then(() => {
-            this.logger.logInfo("[Finished] Refreshing the configstore ...");
-        }).catch((error) => {
-            this.logger.logInfo("[Error] Refreshing the configstore ...");
-            this.logger.logInfo(error);
-        })
+        return new Promise((resolve, reject) => {
+            this.loadConfig().then(() => {
+                this.logger.logInfo("[Finished] Refreshing the configstore ...");
+                resolve();
+            }).catch((error) => {
+                this.logger.logInfo("[Error] Refreshing the configstore ...");
+                this.logger.logInfo(error);
+                reject(error);
+            })
+        });
     }
 
     private constructConfigUrl(applicationName: string, profile: string): URL {
