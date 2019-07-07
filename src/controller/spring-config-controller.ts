@@ -52,8 +52,11 @@ export class SpringConfigController implements IConfigController {
             this.configStoreMap[this.properties.applicationName] = new SpringConfigStore(profileConfigStore);
         
             this.logger.logInfo("[Completed] Loading configs for application: [" + this.properties.applicationName + "]");
+            return Promise.resolve();
         } catch (error) {
-            this.logger.logError("Loading configs for application: [" + this.properties.applicationName + "] caused error:" + error);
+            this.logger.logError("[Error] Loading configs for application: [" + this.properties.applicationName + "]");
+            this.logger.logError(error);
+            return Promise.reject(error);
         }
     }
 
@@ -63,7 +66,13 @@ export class SpringConfigController implements IConfigController {
     }
     
     public refreshConfigStore(): void {
-        throw new Error("Method not implemented.");
+        this.logger.logInfo("[Started] Refreshing the configstore ...");
+        this.loadConfig().then(() => {
+            this.logger.logInfo("[Finished] Refreshing the configstore ...");
+        }).catch((error) => {
+            this.logger.logInfo("[Error] Refreshing the configstore ...");
+            this.logger.logInfo(error);
+        })
     }
 
     private constructConfigUrl(applicationName: string, profile: string): URL {

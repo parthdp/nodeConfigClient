@@ -17,6 +17,8 @@ springConfigController.loadConfig().then(() => {
     const config: IConfig = configStore.getConfig('user.role', 'development');
     logger.logInfo(config.name + ":" + config.value);
 
+    springConfigController.refreshConfigStore();
+
     configStore = springConfigController.getConfigStore('sampleClient');
     const newConfig: IConfig = configStore.getConfig('user.role', 'staging');
     logger.logInfo(newConfig.name + ":" + newConfig.value);
