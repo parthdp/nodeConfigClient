@@ -32,7 +32,7 @@ git clone https://github.com/parthdp/nodeConfigClient
     "tslint-config-prettier": "^1.14.0"
   }
 ```
-- Create a properties js file e.g. sample.properties.js which will be consumed by node config client to load the properties from config server.
+- Create a properties js file e.g. sample.properties.js which will be consumed by node config client to load the properties from config server. Add appropriate values for config server.
 
 ```
 const properties = {
@@ -67,7 +67,7 @@ springConfigController.loadConfig().then(() => {
     logger.logInfo("Spring configuration properties loaded successfully");
 });
 
-app.get('/', (req, res) => {
+app.get('/config', (req, res) => {
     const profile = req.query.profile;
     const applicationName = 'sampleClient';
     const configName = req.query.configName;
@@ -77,6 +77,12 @@ app.get('/', (req, res) => {
     logger.logInfo(config.name + ":" + config.value);
 
     res.send(config);
+});
+
+app.get('/config/all', (req, res) => {
+    const applicationName = 'sampleClient';
+    let configStore = springConfigController.getConfigStore(applicationName);
+    res.send(configStore);
 });
 
 app.post('/refresh', (req, res) => {
@@ -94,3 +100,30 @@ app.listen(3000, () => console.log('SamplieClient app listening on port 3000!'))
 node index.js <FullPathTo{sample.properties.js}>
 
 ```
+- curl http://localhost:3000/config/all
+    response e.g. {
+        "configs": {
+            "profileStore": {
+                "development": {
+                    "user.role": {
+                        "name": "user.role",
+                        "value": "AwsomeDeveloper"
+                    }
+                },
+                "staging": {
+                    "user.role": {
+                        "name": "user.role",
+                        "value": "Staging"
+                    },
+                    "user.privilege": {
+                        "name": "user.privilege",
+                        "value": "Admin"
+                    }
+                }
+            }
+        }
+    }
+- curl http://localhost:3000/config?profile=staging&configName=user.privilege
+    response e.g. { "name": "user.privilege", "value": "Admin" }
+- curl -X POST 'http://localhost:3000/refresh'
+    response e.g. {"success":true}
