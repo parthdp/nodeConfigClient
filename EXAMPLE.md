@@ -101,7 +101,9 @@ node index.js <FullPathTo{sample.properties.js}>
 
 ```
 - curl http://localhost:3000/config/all
-    response e.g. {
+    response e.g.
+    ```    
+        {
         "configs": {
             "profileStore": {
                 "development": {
@@ -123,7 +125,16 @@ node index.js <FullPathTo{sample.properties.js}>
             }
         }
     }
+    ```
+
 - curl http://localhost:3000/config?profile=staging&configName=user.privilege
-    response e.g. { "name": "user.privilege", "value": "Admin" }
+    response e.g.
+    ```
+    { "name": "user.privilege", "value": "Admin" }
+    ```
+
 - curl -X POST 'http://localhost:3000/refresh'
-    response e.g. {"success":true}
+    response e.g.
+    ```
+    {"success":true}
+    ``
