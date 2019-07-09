@@ -9,8 +9,9 @@
             "request": "launch",
             "name": "start",
             "program": "${workspaceFolder}/src/index.ts",
+            "console": "integratedTerminal",
             "args" : [
-                "/Users/parthpatel/Desktop/projects/github/nodeConfigClient/properties/spring.properties.js"
+                "${workspaceFolder}/properties/spring.properties.js"
             ],
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"
