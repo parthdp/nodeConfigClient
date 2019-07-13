@@ -57,14 +57,21 @@ module.exports = properties;
 const nodeConfigClient = require('nodeConfigClient')
 const express = require('express');
 const app = express();
-
-const loader = new nodeConfigClient.Loader();
-const properties = loader.loadProperties();
 const logger = new nodeConfigClient.SimpleLogger();
-const springConfigController = new nodeConfigClient.SpringConfigController(properties, logger);
+const loader = new nodeConfigClient.Loader();
+let configurator;
 
-springConfigController.loadConfig().then(() => {
-    logger.logInfo("Spring configuration properties loaded successfully");
+if (process.argv.length !== 3) {
+    throw new Error('Bad Command.. Correct Use: node index.js <absoluteFilePathToConfigurationFile>');
+}
+
+const properties = loader.loadProperties(process.argv[2]);
+
+nodeConfigClient.configuratorFactory.getDefaultConfigurator(properties, logger).then((data) => {
+    configurator = data
+}).catch((error) => {
+    logger.logError(error);
+    process.exit()
 });
 
 app.get('/config', (req, res) => {
@@ -72,7 +79,7 @@ app.get('/config', (req, res) => {
     const applicationName = 'sampleClient';
     const configName = req.query.configName;
 
-    let configStore = springConfigController.getConfigStore(applicationName);
+    let configStore = configurator.getConfigStore(applicationName);
     const config = configStore.getConfig(configName, profile);
     logger.logInfo(config.name + ":" + config.value);
 
@@ -81,17 +88,18 @@ app.get('/config', (req, res) => {
 
 app.get('/config/all', (req, res) => {
     const applicationName = 'sampleClient';
-    let configStore = springConfigController.getConfigStore(applicationName);
+    let configStore = configurator.getConfigStore(applicationName);
     res.send(configStore);
 });
 
 app.post('/refresh', (req, res) => {
-    springConfigController.refreshConfigStore()
+    configurator.refreshConfigStore()
     .then(() => res.send({success: true}))
     .catch((error) => res.send({success: false, error}))
 });
 
 app.listen(3000, () => console.log('SamplieClient app listening on port 3000!'));
+
 ```
 
 - Run the app

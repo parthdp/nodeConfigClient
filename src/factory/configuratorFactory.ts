@@ -5,7 +5,7 @@ import { ILogger } from "../common/logger/logger.interface";
 
 class ConfiguratorFactory {
     private configurator!: IConfigurator;
-    
+
     public getDefaultConfigurator(properties: ISpringConfigControllerProperties, logger: ILogger): Promise<IConfigurator> {
         if (this.configurator) {
             return Promise.resolve(this.configurator);

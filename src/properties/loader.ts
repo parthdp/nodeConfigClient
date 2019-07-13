@@ -2,18 +2,12 @@ import { ISpringConfigControllerProperties } from "../properties/spring-config-c
 import fs from 'fs';
 
 export class Loader {
-    public loadProperties(): ISpringConfigControllerProperties {
+    public loadProperties(propertiesFilePath: string): ISpringConfigControllerProperties {
 
-        if (process.argv.length !== 3) {
-            throw new Error('Bad Command.. Correct Use: node index.js <absoluteFilePathToConfigurationFile>');
+        if (!fs.existsSync(propertiesFilePath)) {
+            throw new Error(propertiesFilePath + ' does not exists');
         }
 
-        const absolutePropertiesFilePath = process.argv[2];
-
-        if (!fs.existsSync(absolutePropertiesFilePath)) {
-            throw new Error(absolutePropertiesFilePath + ' does not exists');
-        }
-
-        return require(absolutePropertiesFilePath);
+        return require(propertiesFilePath);
     }
 }
