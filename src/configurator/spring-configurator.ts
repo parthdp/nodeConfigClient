@@ -1,12 +1,12 @@
 import { HttpService } from "../common/httpService";
-import { IConfigController } from "./config-controller.interface";
+import { IConfigurator } from "./configurator.interface";
 import { ILogger } from "../common/logger/logger.interface";
 import { ISpringConfigControllerProperties } from "../properties/spring-config-controller-properties.interface";
 import { ISpringConfigResponse } from "../config/store/spring/config-response.interface";
 import { IProfileConfigStore, SpringConfigStore } from "../config/store/spring/springConfigStore";
 import { URL } from 'url';
 
-export class SpringConfigController implements IConfigController {
+export class SpringConfigurator implements IConfigurator{
     
     private httpService: HttpService;
     private configStoreMap: {[applicationName: string]: SpringConfigStore } = {}

@@ -4,7 +4,7 @@ const properties = {
     httpProtocol: "http",
     authRequired: true,
     username: 'user',
-    password: 'f09828e4-c73e-4bcc-a732-1cbd0305cc9a',
+    password: '6842ab86-e464-4b7d-b75f-9955efaebd0d',
     profiles: ['development', 'staging'],
     label: 'master',
     applicationName: 'sampleClient'
