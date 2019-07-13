@@ -6,7 +6,7 @@ Node config client to connect with config server e.g. spring config server.
 - yarn install
 
 ## Examples
-- See EXAMPLES.md file.
+- See EXAMPLE.md file.
 
 ## Running the tests
 * yarn test
